@@ -1,0 +1,38 @@
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+logs/
+
+# Local data
+data/*
+!data/.gitkeep
+
+# Operating system
+.DS_Store
+Thumbs.db
