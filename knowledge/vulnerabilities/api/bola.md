@@ -106,3 +106,23 @@ Each combination requires independent validation.
 - Related Skills: Authentication, Authorization
 - Confidence: Educational reference
 - Reusability: High
+## Related Writeups
+
+### Nextcloud Out-of-Office API — BOLA
+
+- Platform: HackerOne
+- Vulnerability: Broken Object Level Authorization
+- OWASP: API1:2023
+- CWE: CWE-639 (proposed)
+- Verification: Author-reported, not independently verified
+
+Detailed analysis:
+
+[Nextcloud Out-of-Office API — BOLA](../../writeups/hackerone/nextcloud-out-of-office-bola.md)
+
+### Reusable Security Patterns
+
+- User-controlled object identifiers.
+- Missing ownership validation.
+- Cross-user access to private resources.
+- Authorization inconsistencies across API endpoints.

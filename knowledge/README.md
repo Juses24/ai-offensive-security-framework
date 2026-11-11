@@ -18,6 +18,7 @@ and reusable technical knowledge.
 - Bugcrowd
 - HackerOne
 - Personal Research
+- [Nextcloud Out-of-Office API — BOLA](writeups/hackerone/nextcloud-out-of-office-bola.md)
 
 ## Vulnerabilities
 
