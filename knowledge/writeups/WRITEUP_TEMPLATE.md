@@ -1,24 +1,64 @@
 
-# Writeup Intelligence Record
+---
+schema_version: "1.0"
 
-## 1. Metadata
+id: "unique-writeup-id"
+title: "Writeup title"
 
-- Title:
-- Author:
-- Platform:
-- Source URL:
-- Publication Date:
-- Date Analyzed:
-- Category:
-- Related CWE:
-- Related CVE:
-- Verification Status:
+source:
+  platform: ""
+  author: null
+  url: ""
+  report_id: null
+  published_at: null
 
-## 2. Executive Summary
+target:
+  name: ""
+  application_type: ""
+  technology_stack: []
+  affected_versions: []
+  affected_endpoints: []
+
+classification:
+  category: ""
+  vulnerability: []
+  owasp: []
+  cwe: []
+  cve: []
+
+severity:
+  value: "unknown"
+  cvss: null
+  source: ""
+
+verification:
+  status: "author_reported"
+  independently_reproduced: false
+
+confidence: "medium"
+
+intelligence:
+  attack_surface: []
+  techniques: []
+  detection_patterns: []
+  related_vulnerabilities: []
+  potential_chains: []
+
+tags: []
+related_skills: []
+
+research:
+  status: "analyzed"
+  created_at: ""
+  updated_at: ""
+
+---
+
+# Executive Summary
 
 Brief description of the vulnerability and discovery.
 
-## 3. Target Context
+# Target Context
 
 - Application type:
 - Technology stack:
@@ -26,7 +66,11 @@ Brief description of the vulnerability and discovery.
 - Attack surface:
 - Scope / authorization context:
 
-## 4. Vulnerability Details
+# Affected Endpoints
+
+List affected endpoints, HTTP methods and parameters.
+
+# Vulnerability Details
 
 - Vulnerability:
 - Root cause:
@@ -34,11 +78,11 @@ Brief description of the vulnerability and discovery.
 - Preconditions:
 - Security boundary violated:
 
-## 5. Discovery Methodology
+# Discovery Methodology
 
 Step-by-step explanation of how the vulnerability was identified.
 
-## 6. Technical Evidence
+# Technical Evidence
 
 - HTTP requests:
 - HTTP responses:
@@ -49,14 +93,21 @@ Step-by-step explanation of how the vulnerability was identified.
 
 Remove credentials, tokens and personal data.
 
-## 7. Exploitation Analysis
+# Exploitation Analysis
 
 - Exploitation conditions:
 - Reproducibility:
 - Potential impact:
 - Limitations:
 
-## 8. Vulnerability Chaining
+# Impact Analysis
+
+- Confidentiality:
+- Integrity:
+- Availability:
+- Business impact:
+
+# Vulnerability Chaining
 
 - Initial vulnerability:
 - Secondary vulnerability:
@@ -64,21 +115,21 @@ Remove credentials, tokens and personal data.
 - Combined impact:
 - Chain validation:
 
-## 9. Lessons Learned
+# Lessons Learned
 
 - What was overlooked?
 - What indicators revealed the vulnerability?
 - What alternative tests could have helped?
 
-## 10. Detection Patterns
+# Detection Patterns
 
 Reusable indicators and techniques for future assessments.
 
-## 11. Remediation
+# Remediation
 
 Technical recommendations.
 
-## 12. References
+# References
 
 - Original writeup:
 - OWASP:
@@ -86,9 +137,6 @@ Technical recommendations.
 - CVE:
 - Additional research:
 
-## 13. AI-OSF Classification
+# Research Notes
 
-- Tags:
-- Related skills:
-- Confidence:
-- Reusability:
+Separate verified facts, author-reported claims and AI-OSF hypotheses.

@@ -1,21 +1,89 @@
+---
+schema_version: "1.0"
 
-# Nextcloud Out-of-Office API — BOLA
+id: "hackerone-nextcloud-001"
+title: "Nextcloud Out-of-Office API BOLA"
 
-## 1. Metadata
+source:
+  platform: "hackerone"
+  author: null
+  url: "https://hackerone.com/reports/3382343"
+  report_id: "3382343"
+  published_at: null
 
-- Platform: HackerOne
-- Target: Nextcloud
-- Category: API Security
-- Vulnerability: Broken Object Level Authorization (BOLA)
-- Related vulnerability: IDOR
-- OWASP: API1:2023
-- CWE: CWE-639 (proposed mapping)
-- Affected version: 32.0.0.13 (author-reported)
-- Severity: Medium (as reported)
-- Verification: Author-reported, not independently verified
-- Research status: Analyzed
+target:
+  name: "Nextcloud"
+  application_type: "Collaboration platform"
+  technology_stack: []
+  affected_versions:
+    - "32.0.0.13"
+  affected_endpoints:
+    - method: "GET"
+      path: "/ocs/v2.php/apps/dav/api/v1/outOfOffice/{userId}"
+    - method: "GET"
+      path: "/ocs/v2.php/apps/dav/api/v1/outOfOffice/{userId}/now"
 
-## 2. Executive Summary
+classification:
+  category: "api_security"
+  vulnerability:
+    - "BOLA"
+    - "IDOR"
+  owasp:
+    - "API1:2023"
+  cwe:
+    - "CWE-639"
+    - "CWE-862"
+    - "CWE-863"
+  cve: []
+
+severity:
+  value: "medium"
+  cvss: null
+  source: "author_reported"
+
+verification:
+  status: "author_reported"
+  independently_reproduced: false
+
+confidence: "medium"
+
+intelligence:
+  attack_surface:
+    - "REST API"
+    - "User-specific resources"
+  techniques:
+    - "Object identifier manipulation"
+    - "Cross-user authorization testing"
+  detection_patterns:
+    - "User-controlled identifiers in API paths"
+    - "Missing object ownership validation"
+    - "Cross-user access to private resources"
+    - "Authorization inconsistencies across endpoints"
+  related_vulnerabilities:
+    - "Sensitive Information Disclosure"
+  potential_chains:
+    - "BOLA + Business Logic Abuse"
+    - "BOLA + Social Engineering"
+
+tags:
+  - "bola"
+  - "idor"
+  - "api-security"
+  - "nextcloud"
+  - "hackerone"
+
+related_skills:
+  - "API Security"
+  - "Authentication"
+  - "Authorization"
+
+research:
+  status: "analyzed"
+  created_at: "2026-11-11"
+  updated_at: "2026-11-11"
+---
+
+# Executive Summary
 
 The report describes a BOLA vulnerability in the Nextcloud
 Out-of-Office API.
@@ -27,41 +95,49 @@ userId path parameter.
 The affected functionality exposes personal absence
 information without validating object ownership.
 
-## 3. Affected Endpoints
+# Target Context
 
+- Application: Nextcloud.
+- Application type: Collaboration platform.
+- Affected version: 32.0.0.13 (author-reported).
+- Authentication required: Yes.
+- Attack surface: Out-of-Office REST API.
+- Scope: Two controlled accounts in the reported test environment.
+
+# Affected Endpoints
+
+**Endpoint 1**
+
+```http
 GET /ocs/v2.php/apps/dav/api/v1/outOfOffice/{userId}
+```
 
+**Endpoint 2**
+
+```http
 GET /ocs/v2.php/apps/dav/api/v1/outOfOffice/{userId}/now
+```
 
-## 4. Root Cause
+Both endpoints reportedly expose user-specific absence information.
 
-According to the report, the controller retrieves absence
-information using the userId supplied in the request.
+# Vulnerability Details
 
-The GET methods reportedly do not verify whether the
-authenticated user owns the requested resource.
+- Vulnerability: Broken Object Level Authorization (BOLA).
+- Related classification: IDOR.
+- Root cause: Missing object ownership validation.
+- Affected component: Out-of-Office API controller.
+- Preconditions: Authenticated user and a target user identifier.
+- Security boundary violated: Cross-user resource authorization.
 
-The report identifies the following implementation details:
+According to the report, the GET methods retrieve information
+using the userId supplied in the request without verifying
+whether the authenticated user is authorized to access it.
 
-- NoAdminRequired route attributes.
-- Missing object ownership validation.
-- Direct use of the userId path parameter.
-- Absence service access without the required ownership check.
+The report identifies `NoAdminRequired` route attributes.
+These attributes permit access without administrator privileges;
+their presence alone does not establish the vulnerability.
 
-## 5. Authentication and Authorization Context
-
-The reported test environment contains two controlled accounts:
-
-- Bob: authenticated requesting user.
-- Alice: owner of the absence information.
-
-Bob uses his own authentication token while requesting
-Alice's resource.
-
-The expected authorization behavior is to deny access
-to another user's private absence information.
-
-## 6. Discovery Methodology
+# Discovery Methodology
 
 According to the report:
 
@@ -73,68 +149,58 @@ According to the report:
 6. Compare the HTTP response with the expected authorization behavior.
 7. Repeat the analysis against the real-time status endpoint.
 
-## 7. Evidence
+# Technical Evidence
 
 The report describes the following behavior:
 
-- Authenticated request using Bob's identity.
-- Path parameter referencing Alice.
-- HTTP 200 response.
-- Response containing Alice's absence information.
+- Bob authenticates using his own account.
+- The request references Alice through the userId path parameter.
+- The server reportedly returns HTTP 200 OK.
+- The response contains Alice's absence information.
 
 Expected behavior:
-HTTP 403 Forbidden.
+
+```http
+HTTP/1.1 403 Forbidden
+```
 
 Reported behavior:
-HTTP 200 OK.
 
-Sensitive example credentials, personal data and tokens
-have intentionally been excluded from this knowledge entry.
+```http
+HTTP/1.1 200 OK
+```
 
-## 8. Exposed Information
+The evidence is author-reported and has not been independently reproduced by AI-OSF.
 
-The report identifies these potentially exposed fields:
+Sensitive example credentials, personal data and tokens have
+intentionally been excluded from this knowledge entry.
 
-- Absence start date.
-- Absence end date.
-- Absence status.
-- Personal absence message.
-- Replacement user identifier.
-- Replacement user display name.
-- Current absence status.
+# Exploitation Analysis
 
-## 9. Impact Analysis
+- Exploitation condition: Authenticated access to the affected API.
+- Technique: Manipulation of a user-controlled object identifier.
+- Reproducibility: Described by the original report.
+- Limitation: No independent reproduction performed by AI-OSF.
 
-Primary impact: Confidentiality.
+The report also describes enumeration of user identifiers.
+The associated script and its complete evidence were not supplied.
 
-Potential consequences:
+# Impact Analysis
 
-- Unauthorized disclosure of personal information.
-- Exposure of employee absence schedules.
-- Disclosure of travel or contact information.
+**Confidentiality:** Potential unauthorized disclosure of personal absence information.
+
+**Integrity:** No modification demonstrated through the reported GET vulnerability.
+
+**Availability:** No availability impact demonstrated.
+
+Potential consequences include:
+
+- Disclosure of employee absence schedules.
+- Exposure of personal messages and replacement contacts.
 - Social engineering opportunities.
 - Organizational intelligence gathering.
 
-Integrity:
-No modification demonstrated through the reported GET vulnerability.
-
-Availability:
-No availability impact demonstrated.
-
-## 10. Vulnerability Classification
-
-Primary classification:
-OWASP API1:2023 — Broken Object Level Authorization.
-
-Proposed CWE mapping:
-- CWE-639: Authorization Bypass Through User-Controlled Key.
-- CWE-862: Missing Authorization.
-- CWE-863: Incorrect Authorization.
-
-The CWE mappings are proposed classifications and should
-be validated against the final implementation details.
-
-## 11. Vulnerability Chaining Opportunities
+# Vulnerability Chaining
 
 Potential relationships to investigate:
 
@@ -142,10 +208,24 @@ Potential relationships to investigate:
 - BOLA + Business Logic Abuse.
 - BOLA + Social Engineering.
 
-These are potential scenarios, not independently
-confirmed vulnerability chains.
+These are hypotheses, not independently confirmed vulnerability chains.
 
-## 12. Remediation
+# Lessons Learned
+
+- Authentication does not imply authorization.
+- User-controlled identifiers require server-side ownership checks.
+- Related API endpoints should enforce consistent authorization.
+- Test cross-user access using separate controlled accounts.
+
+# Detection Patterns
+
+- User-controlled identifiers in API paths.
+- Endpoints returning user-specific resources.
+- Missing ownership validation.
+- Authenticated requests accessing another user's objects.
+- Similar functionality exposed through multiple endpoints.
+
+# Remediation
 
 - Enforce server-side object-level authorization.
 - Retrieve the authenticated user identity from the session.
@@ -154,46 +234,21 @@ confirmed vulnerability chains.
 - Add regression tests for cross-user access.
 - Return HTTP 403 when access is unauthorized.
 
-## 13. AI-OSF Intelligence
+# References
 
-### Detection Patterns
-
-- User-controlled identifiers in API paths.
-- Endpoints returning user-specific resources.
-- Missing ownership validation.
-- Authenticated requests accessing another user's objects.
-- Similar functionality exposed through multiple endpoints.
-
-### Related Skills
-
-- API Security.
-- Authentication.
-- Authorization.
-- BOLA / IDOR.
-
-### Reusability
-
-High.
-
-### Confidence
-
-Medium as a research reference.
-Not independently reproduced by AI-OSF.
-
-## 14. References
-
-- HackerOne report: Nextcloud Out-of-Office API BOLA.
+- Original report: https://hackerone.com/reports/3382343
 - OWASP API Security Top 10 — API1:2023.
 - CWE-639.
 - CWE-862.
 - CWE-863.
 
-## 15. Research Notes
+# Research Notes
 
-This entry is based on the supplied report content.
+This entry is based on the report content supplied to AI-OSF.
 
-The reported vulnerability and technical evidence have
-not yet been independently reproduced.
+The affected version, severity and technical behavior are author-reported.
 
-Claims involving mass enumeration, regulatory consequences
-and real-world attack scenarios require separate validation.
+The CWE mappings are proposed classifications and require validation.
+
+Claims involving mass enumeration, regulatory consequences and
+real-world attack scenarios require separate validation.
