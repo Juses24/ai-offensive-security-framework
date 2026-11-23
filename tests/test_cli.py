@@ -50,3 +50,32 @@ def test_cli_handles_missing_writeup():
 
     assert result.returncode == 1
     assert "[ERROR]" in result.stdout
+
+
+def test_cli_rejects_invalid_writeup(tmp_path):
+    content = WRITEUP_PATH.read_text(encoding="utf-8")
+
+    content = content.replace(
+        'title: "Nextcloud Out-of-Office API BOLA"',
+        'title: ""',
+    )
+
+    invalid_path = tmp_path / "invalid-writeup.md"
+    invalid_path.write_text(content, encoding="utf-8")
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "tools.ai_osf",
+            "process",
+            str(invalid_path),
+        ],
+        capture_output=True,
+        text=True,
+        cwd=PROJECT_ROOT,
+    )
+
+    assert result.returncode == 1
+    assert "[ERROR]" in result.stdout
+    assert "Field 'title' cannot be empty" in result.stdout

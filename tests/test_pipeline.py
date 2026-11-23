@@ -1,4 +1,9 @@
-from core.pipeline import process_writeup
+import pytest
+
+from core.pipeline import (
+    WriteupValidationError,
+    process_writeup,
+)
 
 
 def create_test_writeup(tmp_path):
@@ -9,8 +14,11 @@ title: "Example BOLA Finding"
 
 source:
   platform: "hackerone"
+  url: "https://example.com/report"
 
 target:
+  name: "Example Application"
+  affected_versions: []
   affected_endpoints:
     - method: "GET"
       path: "/api/users/{id}"
@@ -26,6 +34,7 @@ classification:
     - "CWE-639"
     - "CWE-862"
     - "CWE-863"
+  cve: []
 
 severity:
   value: "medium"
@@ -35,6 +44,18 @@ verification:
   independently_reproduced: false
 
 confidence: "medium"
+
+intelligence:
+  attack_surface: []
+  techniques: []
+  detection_patterns: []
+  related_vulnerabilities: []
+  potential_chains: []
+
+research:
+  status: "analyzed"
+  created_at: "2026-11-24"
+  updated_at: "2026-11-24"
 ---
 
 # Impact Analysis
@@ -92,3 +113,19 @@ def test_pipeline_preserves_verification_status(tmp_path):
     assert result.finding.independently_reproduced is False
 
     assert result.classification.knowledge_base.cwe[0].status == "potential"
+
+
+def test_pipeline_rejects_invalid_writeup(tmp_path):
+    path = create_test_writeup(tmp_path)
+
+    content = path.read_text(encoding="utf-8")
+    content = content.replace(
+        'title: "Example BOLA Finding"',
+        'title: ""',
+    )
+    path.write_text(content, encoding="utf-8")
+
+    with pytest.raises(WriteupValidationError) as exc_info:
+        process_writeup(path)
+
+    assert "Field 'title' cannot be empty" in exc_info.value.errors

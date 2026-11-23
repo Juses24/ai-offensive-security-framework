@@ -4,11 +4,23 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from tools.writeup_parser import WriteupDocument, parse_writeup
+from tools.writeup_validator import validate_writeup
 from tools.finding_extractor import Finding, extract_finding
 from core.classification_engine import (
     ClassificationResult,
     classify_finding,
 )
+
+
+class WriteupValidationError(Exception):
+    """Raised when a writeup fails schema validation."""
+
+    def __init__(self, errors: list[str]):
+        self.errors = errors
+        message = "Writeup validation failed:\n" + "\n".join(
+            f"  - {error}" for error in errors
+        )
+        super().__init__(message)
 
 
 @dataclass
@@ -22,9 +34,14 @@ def process_writeup(path: Path) -> PipelineResult:
     """
     Process a Markdown writeup through the AI-OSF pipeline.
 
-    Parsing, extraction and classification remain separate
-    operations coordinated by this module.
+    Validates the writeup before parsing, extraction and
+    classification.
     """
+
+    errors = validate_writeup(path)
+
+    if errors:
+        raise WriteupValidationError(errors)
 
     document = parse_writeup(path)
 
