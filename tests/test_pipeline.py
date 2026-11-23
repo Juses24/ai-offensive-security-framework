@@ -82,7 +82,8 @@ def test_pipeline_processes_writeup(tmp_path):
     assert result.finding.vulnerabilities == ["BOLA", "IDOR"]
 
     assert result.classification.normalized_vulnerabilities == [
-        "Broken Object Level Authorization"
+        "Broken Object Level Authorization",
+        "Insecure Direct Object Reference",
     ]
 
 

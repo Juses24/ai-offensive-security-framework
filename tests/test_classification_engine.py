@@ -36,7 +36,7 @@ def test_normalizes_full_bola_name():
     ]
 
 
-def test_does_not_treat_idor_as_bola_automatically():
+def test_classifies_idor_independently_from_bola():
     finding = Finding(
         writeup_id="test-003",
         title="Example IDOR",
@@ -45,9 +45,20 @@ def test_does_not_treat_idor_as_bola_automatically():
 
     result = classify_finding(finding)
 
-    assert result.normalized_vulnerabilities == []
-    assert result.category is None
+    assert result.normalized_vulnerabilities == [
+        "Insecure Direct Object Reference"
+    ]
 
+    assert result.normalized_vulnerabilities != [
+        "Broken Object Level Authorization"
+    ]
+
+    assert result.category.value == "Access Control"
+    assert result.owasp[0].value == "A01:2025"
+
+    assert result.cwe[0].value == "CWE-639"
+    assert result.cwe[0].confidence == "medium"
+    assert result.cwe[0].status == "potential"
 
 def test_preserves_original_vulnerability_labels():
     finding = Finding(

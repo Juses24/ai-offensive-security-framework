@@ -80,9 +80,30 @@ VULNERABILITY_REGISTRY = {
             "IDOR",
             "Object-level access control",
         ],
-    }
+    },
+    "idor": {
+        "canonical_name": "Insecure Direct Object Reference",
+        "aliases": [
+            "idor",
+            "insecure direct object reference",
+            "insecure direct object references",
+        ],
+        "category": "Access Control",
+        "owasp": "A01:2025",
+        "cwe": [
+            {
+                "value": "CWE-639",
+                "confidence": "medium",
+                "status": "potential",
+            }
+        ],
+        "related_concepts": [
+            "Broken Access Control",
+            "Object-level authorization",
+            "Authorization bypass",
+        ],
+    },
 }
-
 
 def normalize_name(value: str) -> str:
     """Normalize a vulnerability label for matching."""
