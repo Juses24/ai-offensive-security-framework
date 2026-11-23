@@ -235,13 +235,12 @@ def validate_writeup(path: Path) -> list[str]:
                 "independently_reproduced=True"
             )
 
-    return errors
-
     # 10. Validate non-empty identifiers
     for field in ("id", "title"):
-        if isinstance(metadata.get(field), str):
-            if not metadata[field].strip():
-                errors.append(f"Field '{field}' cannot be empty")
+        value = metadata.get(field)
+
+        if isinstance(value, str) and not value.strip():
+            errors.append(f"Field '{field}' cannot be empty")
 
     return errors
 
